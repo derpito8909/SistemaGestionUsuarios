@@ -1,0 +1,76 @@
+using GestionUsuarios.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+namespace GestionUsuarios.Data.Repositories;
+
+public interface IUserRepository{
+
+Task<IEnumerable<Usuario>>GetAllUsers();
+Task<Usuario> AddUser(Usuario user);
+Task<Usuario> GetUserById(int? id);
+Task<Usuario> UpdateUser(Usuario user);
+Task<bool> DeleteUser(int? id);
+
+bool ExistUser(int id);
+
+}
+public class UserRepository: IUserRepository
+{
+    private readonly AppDbContext _context;
+
+    public UserRepository(AppDbContext context){
+        _context = context;
+    }
+
+    public async Task<Usuario> AddUser(Usuario user)
+    {
+        EntityEntry<Usuario> addUser = await _context.Usuarios.AddAsync(user);
+        await _context.SaveChangesAsync();
+        return addUser.Entity;
+    }
+
+    public async Task<bool> DeleteUser(int? id)
+    {
+        bool isdelete = false;
+         var usuario = await _context.Usuarios.FirstOrDefaultAsync(m=>m.IdUser == id);
+         if (usuario != null){
+            _context.Usuarios.Remove(usuario);
+            isdelete = true;
+         }
+         await _context.SaveChangesAsync();
+         return isdelete;
+
+    }
+
+    public bool ExistUser(int id)
+    {
+        return _context.Usuarios.Any( e=>e.IdUser == id);
+    }
+
+    public async Task<IEnumerable<Usuario>> GetAllUsers()
+    {
+        return await _context.Usuarios.ToListAsync<Usuario>();
+    }
+
+    public async Task<Usuario> GetUserById(int? id)
+    {
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(m=>m.IdUser == id);
+
+        if(usuario != null){
+            return usuario;
+        }else
+        {
+            return null;
+        }
+    }
+    
+
+    public async Task<Usuario> UpdateUser(Usuario user)
+    {
+        _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            return user;
+    }
+}

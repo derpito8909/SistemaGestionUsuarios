@@ -1,0 +1,47 @@
+@model IEnumerable<GestionUsuarios.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<h1>Inicio</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm boton-general">Crear nuevo usuario</a>
+</p>
+<table class="blueTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.contrasena)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.contrasena)
+            </td>
+            <td class="iconos">
+                <a asp-action="Edit" asp-route-id="@item.IdUser"><i class="bi bi-pencil-square h3"></i></a> |
+                <a asp-action="Details" asp-route-id="@item.IdUser"><i class="bi bi-search h3"></i></a> |
+                <a asp-action="Delete" asp-route-id="@item.IdUser"><i class="bi bi-trash-fill h3"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
